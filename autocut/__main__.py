@@ -1,8 +1,8 @@
-import os
+import sys
 import argparse
 from pathlib import Path
 
-os.chdir(Path(__file__).resolve().parent.parent.parent)
+sys.path.insert(0, Path(__file__).parents[1].as_posix())
 __package__ = 'autocut'
 
 from .auto_editor import main
