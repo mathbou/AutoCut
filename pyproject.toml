@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "autocut"
+version = "1.0.0"
+description = ""
+authors = ["Mathieu <923463-mathbou@users.noreply.gitlab.com>"]
+license = "AGPL-3.0-or-later"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.12"
+ffmpeg-python = "0.2.*"
+
+[tool.poetry.scripts]
+autocut-cli = "autocut.launch:cli"
+autocut = "autocut.launch:gui"
+
+[tool.black]
+skip-string-normalization = true
+line-length = 120
+
+[tool.isort]
+atomic = true
+profile = "black"
+line_length = 120
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,14 +1,32 @@
+#
+# Copyright (c) 2023 Mathieu Bouzard.
+#
+# This file is part of AutoCut
+# (see https://gitlab.com/mathbou/autocut).
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
 from pathlib import Path
-from tkinter import filedialog, Tk
+from typing import List
 
-from typing import NoReturn, List
-
+from .constant import MARGIN, MIN_LENGTH, THRESHOLD
+from .edit import fill_sequence, framerate, get_silence_cuts
 from .xml_maker import xml_maker
-from .edit import get_silence_cuts, fill_sequence, framerate
 
 
-def main(input_path, min_length=1.75, margin=4, threshold=-50, audio_files=None):
-    # type: (Path, float, int, int, List[Path]) -> NoReturn
+def main(input_path, min_length=MIN_LENGTH, margin=MARGIN, threshold=THRESHOLD, audio_files=None):
+    # type: (Path, float, int, int, List[Path]) -> None
     min_length_frame = min_length * framerate(input_path)
 
     if audio_files:
@@ -16,35 +34,7 @@ def main(input_path, min_length=1.75, margin=4, threshold=-50, audio_files=None)
     else:
         audio_file = None
 
-    cuts = get_silence_cuts(in_path, min_length_frame, threshold, margin, audio_file=audio_file)
-    cuts = fill_sequence(in_path, cuts)
+    cuts = get_silence_cuts(input_path, min_length_frame, threshold, margin, audio_file=audio_file)
+    cuts = fill_sequence(input_path, cuts, min_length_frame)
 
-    xml_maker(in_path, cuts, threshold, audio_files=audio_files)
-
-
-if __name__ == '__main__':
-    root = Tk()
-    root.withdraw()
-
-    video_types = [("Video Files", ".mp4")]
-    in_path = filedialog.askopenfilename(initialdir="F:/obs", filetypes=video_types)
-
-    if not in_path:
-        exit(0)
-    else:
-        in_path = Path(in_path)
-
-    audio_types = [("Audio Files", ".mp3 .ogg .wav .flac .aac .m4a")]
-    audio_paths = filedialog.askopenfilenames(initialdir="F:/obs", filetypes=audio_types)
-
-    root.destroy()
-
-    audio_file = None
-    if audio_paths:
-        audio_paths = [ Path(audio_path) for audio_path in audio_paths ]
-        audio_file = audio_paths[0]
-
-
-    main(in_path, audio_files=audio_paths)
-
-    exit(0)
+    xml_maker(input_path, cuts, threshold, audio_files=audio_files)
