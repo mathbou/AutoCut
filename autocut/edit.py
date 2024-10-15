@@ -145,7 +145,7 @@ def section_is_quiet(path, in_, out, threshold=THRESHOLD, frame_length=None):
     lines = cmd.global_args("-vn", "-sn", "-dn").run(capture_stderr=True)[1]
 
     for line in lines.splitlines():
-        max_volume = re.search(b"max_volume: (-?[\d\.]*) dB", line)
+        max_volume = re.search(rb"max_volume: (-?[\d.]*) dB", line)
 
         if max_volume:
             max_volume = max_volume.groups()[0]
@@ -187,8 +187,8 @@ def get_silence_cuts(path, min_length=24, threshold=THRESHOLD, margin=MARGIN, au
 
     silence_cuts = list()
     for line in lines.splitlines():
-        start = re.search(b"silence_start: ([\-\d\.]+)", line)
-        end = re.search(b"silence_end: ([-\\d\.]+)", line)
+        start = re.search(rb"silence_start: ([-\d.]+)", line)
+        end = re.search(rb"silence_end: ([-\d.]+)", line)
 
         if start:
             value = float(start.groups()[0])
